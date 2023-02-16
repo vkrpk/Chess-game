@@ -1,23 +1,31 @@
 package fr.victork.chessGame.entity;
 
-public class Bishop extends ChessPiece {
+public class Pawn extends ChessPiece {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
+
     @Override
     public boolean canGo(int x, int y) {
-        return ((this.getX() + x) == (this.getY() + y)) &&
-                (this.getX() != x &&
-                        this.getY() != y) &&
-                isInTheChessboard(x, y);
+        return (
+                isInTheChessboard(x, y) &&
+                        this.getX() == x &&
+                        y > this.getY() &&
+                        y - this.getY() <= 2
+        );
     }
 
+    @Override
     public boolean canTake(ChessPiece piece) {
-        return canGo(piece.getX(), piece.getY());
+        return (
+                piece.getY() - this.getY() == 1 &&
+                        Math.abs(this.getX() - piece.getX()) == 1
+
+        );
     }
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public Bishop(int x, int y, int color) {
+    public Pawn(int x, int y, int color) {
         super(x, y, color);
     }
     //--------------------- STATIC METHODS -------------------------------------
