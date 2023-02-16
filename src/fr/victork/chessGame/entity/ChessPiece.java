@@ -23,17 +23,17 @@ abstract public class ChessPiece implements MethodsCommonToPieces {
     //--------------------- INSTANCE METHODS -----------------------------------
     public int colorBoxChess() {
         if ((this.getX() + this.getY()) % 2 == 0) {
-            return WHITE_COLOR;
-        } else {
             return BLACK_COLOR;
+        } else {
+            return WHITE_COLOR;
         }
     }
 
     public int incorrectPosition(int number) {
-        if (number < 1) {
+        if (number < 0) {
             return 0;
         } else {
-            return 8;
+            return 7;
         }
     }
 
@@ -58,7 +58,7 @@ abstract public class ChessPiece implements MethodsCommonToPieces {
     }
 
     public void setX(int x) {
-        if (x >= 1 && x <= 8) {
+        if (x >= 0 && x <= 7) {
             this.x = x;
         } else {
             this.x = incorrectPosition(x);
@@ -70,7 +70,7 @@ abstract public class ChessPiece implements MethodsCommonToPieces {
     }
 
     public void setY(int y) {
-        if (y >= 1 && y <= 8) {
+        if (y >= 0 && y <= 7) {
             this.y = y;
         } else {
             this.y = incorrectPosition(y);

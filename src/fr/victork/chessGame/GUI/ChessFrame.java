@@ -1,25 +1,10 @@
-package fr.victork.chessGame.entity;
+package fr.victork.chessGame.GUI;
 
-public class Bishop extends ChessPiece {
+public class ChessFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    @Override
-    public boolean canGo(int x, int y) {
-        return (
-                diagonalMovement(x, y, this) &&
-                        isInTheChessboard(x, y)
-        );
-    }
-
-    public boolean canTake(ChessPiece piece) {
-        return canGo(piece.getX(), piece.getY());
-    }
-
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public Bishop(int x, int y, int color) {
-        super(x, y, color);
-    }
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------
