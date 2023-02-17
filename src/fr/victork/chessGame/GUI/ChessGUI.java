@@ -4,6 +4,7 @@ import fr.victork.chessGame.entity.ChessPiece;
 import fr.victork.chessGame.game.ChessGame;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.io.File;
 
@@ -15,30 +16,59 @@ public class ChessGUI extends JFrame {
     private JLabel[][] boardLabels;
     private ChessGame chessGame;
 
-    // private
     //--------------------- CONSTRUCTORS ---------------------------------------
     public ChessGUI(ChessGame chessGame) {
         this.setChessGame(chessGame);
         setTitle("Chess game");
+
+        // Configure Default Close Operation
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(true);
-        //setSize(400, 500);
+
         setLayout(new BorderLayout());
-        setVisible(true);
+
+        // Get screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Calculate the smallest dimension
+        int minDimension = Math.min(screenSize.width, screenSize.height);
+
+        // Assign the square dimension to the window
+        // setPreferredSize(new Dimension(minDimension, minDimension));
+
+        setSize(minDimension, minDimension);
+
+        int boardSize = minDimension - 100; // Adjust the margin as needed
+        int marginX = (minDimension - boardSize) / 2;
+        int marginY = (minDimension - boardSize) / 2;
+
 
         // Creation of the chess board
         boardPanel = new JPanel();
+        boardPanel.setBorder(BorderFactory.createEmptyBorder(marginY, marginX, marginY, marginX));
+
+        // Set the background color of the board panel
+        boardPanel.setBackground(new Color(240, 217, 181)); // Use your preferred color
+
         boardLabels = new JLabel[8][8];
+
         boardPanel.setLayout(new GridLayout(8, 8));
+
+        // Create a 1 pixel black border
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 JLabel label = new JLabel();
                 boardLabels[col][row] = label;
                 boardPanel.add(label);
+                label.setBorder(border);
             }
         }
+
         add(boardPanel, BorderLayout.CENTER);
-        pack();
+        // pack();
+
+        setVisible(true);
 
         updateGUI();
     }
@@ -46,12 +76,23 @@ public class ChessGUI extends JFrame {
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
     private void updateGUI() {
+        Color customColorGreen = new Color(119, 149, 86);
+        Color customColorWhite = new Color(238, 238, 210);
+
         // Updates the board display
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 ChessPiece piece = getChessGame().getPieceAt(x, y);
+                boardLabels[x][y].setOpaque(true);
+                boardLabels[x][y].setBackground((x + y) % 2 == 0 ? customColorWhite : customColorGreen);
+
+                // Center icons
+                boardLabels[x][y].setHorizontalAlignment(SwingConstants.CENTER);
+
+               /* if (piece == null) {
+                    continue;
+                }*/
                 ImageIcon icon = getIconForPiece(piece);
-                System.out.println("icon:" + icon);
                 boardLabels[x][y].setIcon(icon);
             }
         }
@@ -62,7 +103,6 @@ public class ChessGUI extends JFrame {
             return null;
         }
         int color = piece.getColor();
-        //System.out.println("color:" + color);
         String colorPiece;
         if (color == 1) {
             colorPiece = "WHITE_COLOR";
@@ -70,15 +110,21 @@ public class ChessGUI extends JFrame {
             colorPiece = "BLACK_COLOR";
         }
         String type = piece.getClass().getSimpleName();
-        String filename = "images/" + colorPiece + "/" + type + ".png";
-        //System.out.println("filename:" + filename);
-        String imagePath = "C:\\Dev\\Java\\chess_game\\images\\" + colorPiece + "\\" + type + ".png";
-        File imageFile = new File(imagePath);
-        ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
+        String filename = colorPiece + "/" + type + ".png";
 
-      /*  ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(filename)));
-        System.out.println("icon:" + icon);*/
-        return icon;
+        try {
+            File imageFile = new File(
+                    getClass()
+                            .getClassLoader()
+                            .getResource(filename)
+                            .toURI()
+            );
+            ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
+            return icon;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
